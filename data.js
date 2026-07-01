@@ -1045,12 +1045,17 @@ const SEED_DATA = {
 };
 
 function getDefaultData() {
-  // 尝试从 localStorage 读取，如果没有则使用云端备份数据
+  // 尝试从 localStorage 读取；如果数据为空（空数组），则用云端备份覆盖
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const data = JSON.parse(raw);
+      const total = (data.math?.length||0)+(data.chinese?.length||0)+(data.english?.length||0)+(data.words?.length||0);
+      if (total > 0) return data;
+      // 为空 → 用云端备份覆盖
+      console.log('localStorage 数据为空，自动导入云端备份');
+    }
   } catch(e) {}
-  // 首次使用，导入云端备份
   const copy = JSON.parse(JSON.stringify(SEED_DATA));
   localStorage.setItem(STORAGE_KEY, JSON.stringify(copy));
   return copy;
