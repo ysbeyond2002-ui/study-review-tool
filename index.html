@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📚 错题生词复习工具</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+      <button class="nav-btn" data-view="home" onclick="switchView('home')">🏠 首页</button>
+      <button class="nav-btn" data-view="math" onclick="switchView('math')">📘 数学</button>
+      <button class="nav-btn" data-view="chinese" onclick="switchView('chinese')">📗 语文</button>
+      <button class="nav-btn" data-view="english" onclick="switchView('english')">📙 英语</button>
+      <button class="nav-btn" data-view="history" onclick="switchView('history')">📚 历史</button>
+      <button class="nav-btn" data-view="all_review" onclick="switchView('all_review')">🔄 全部复习</button>
+      <button class="nav-btn" data-view="settings" onclick="switchView('settings')">⚙️ 设置</button>
+    </nav>
+
+    <!-- 内容区域 -->
+    <div id="content"></div>
+  </div>
+
+  <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="views.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
