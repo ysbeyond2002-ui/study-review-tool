@@ -1071,6 +1071,13 @@ function loadData() {
     }
     if (typeof data.stars !== 'number') data.stars = 0;
     if (typeof data.last_login !== 'string') data.last_login = '';
+    // 如果数据为空，用云端备份覆盖
+    const total = (data.math?.length||0)+(data.chinese?.length||0)+(data.english?.length||0)+(data.words?.length||0);
+    if (total === 0 && SEED_DATA && Object.keys(SEED_DATA).length > 0) {
+      console.log('localStorage 数据为空，自动导入云端备份');
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_DATA));
+      return JSON.parse(JSON.stringify(SEED_DATA));
+    }
     return data;
   } catch(e) {
     console.warn('数据加载失败，重置', e);
@@ -1266,11 +1273,25 @@ function importData(file) {
 const GIST_API = 'https://gitee.com/api/v5/gists';
 const GIST_FILENAME = 'study_review_data.json';
 
+const DEFAULT_CLOUD_CONFIG = {
+  token: 'fad72757c98ae83f9ee7be818b90afe1',
+  gistId: '2yts6xjo153nauk4pqhv954'
+};
+
 function getCloudConfig() {
   try {
     const raw = localStorage.getItem('cloud_config');
-    return raw ? JSON.parse(raw) : { token: '', gistId: '' };
-  } catch { return { token: '', gistId: '' }; }
+    if (!raw) {
+      // 首次使用，自动填充已配置的云同步信息
+      localStorage.setItem('cloud_config', JSON.stringify(DEFAULT_CLOUD_CONFIG));
+      return { ...DEFAULT_CLOUD_CONFIG };
+    }
+    const parsed = JSON.parse(raw);
+    // 如果 localStorage 中有空字段，用默认值补全
+    if (!parsed.token) parsed.token = DEFAULT_CLOUD_CONFIG.token;
+    if (!parsed.gistId) parsed.gistId = DEFAULT_CLOUD_CONFIG.gistId;
+    return parsed;
+  } catch { return { ...DEFAULT_CLOUD_CONFIG }; }
 }
 
 function saveCloudConfig(config) {

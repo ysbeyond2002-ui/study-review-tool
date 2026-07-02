@@ -1,5 +1,7 @@
 // ===== 应用入口 =====
 (function init() {
+  // 0. 确保云同步配置已初始化
+  getCloudConfig();
   // 1. 从云端自动加载数据（含去重合并）
   autoLoadFromCloud().then(() => {
     // 2. 登录星星
