@@ -2,6 +2,8 @@
 (function init() {
   // 0. 确保云同步配置已初始化
   getCloudConfig();
+  // 0.5 从 seed.json 导入备份数据（首次访问时）
+  importSeedData();
   // 1. 从云端自动加载数据（含去重合并）
   autoLoadFromCloud().then(() => {
     // 2. 登录星星
